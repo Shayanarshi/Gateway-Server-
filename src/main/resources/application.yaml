@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: Gateway-Server
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: plan-service
+              uri: lb://PLANAPP
+              predicates:
+                - Path=/api/p/**
+              filters:
+                - StripPrefix=2
+
+            - id: friend-service
+              uri: lb://FRIENDAPP
+              predicates:
+                - Path=/api/f/**
+              filters:
+                - StripPrefix=2
+
+            - id: customer-service
+              uri: lb://CUSTOMERAPP
+              predicates:
+                - Path=/api/c/**
+              filters:
+                - StripPrefix=2
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+server:
+  port: 8080
